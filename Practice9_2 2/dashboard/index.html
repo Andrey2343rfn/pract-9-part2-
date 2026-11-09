@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Factory | Edge + Cloud</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-icon">◈</span><div>SMART<span class="brand-light">FACTORY</span><small>IoT Command Center</small></div></div>
+      <div class="nav-label">НАВІГАЦІЯ</div>
+      <a class="nav active" href="#overview"><span>▦</span> Огляд системи</a>
+      <a class="nav" href="#charts"><span>⌁</span> Дані датчиків</a>
+      <a class="nav" href="#alerts"><span>◇</span> Попередження</a>
+      <a class="nav" href="#controls"><span>⌘</span> Керування</a>
+      <div class="sidebar-bottom"><div class="sidebar-card"><span class="pulse-dot"></span> Промислова лінія 01<small>Edge → MQTT → Cloud</small></div><div class="footer-mini">Практична робота 9.2<br>Технології IoT</div></div>
+    </aside>
+    <main class="main">
+      <div class="topbar"><span>ОГЛЯД / МОНІТОРИНГ</span><div class="topright"><span class="clock" id="clock"></span><span id="status" class="status disconnected"><i></i> Підключення...</span></div></div>
+      <header id="overview" class="page-header"><div><p class="eyebrow">SMART FACTORY / LIVE MONITORING</p><h1>Панель моніторингу</h1><p class="subtitle">Моніторинг обладнання з локальною Edge обробкою та Cloud аналітикою.</p></div><div class="live-pill"><span class="pulse-dot"></span> ДАНІ ОНОВЛЮЮТЬСЯ КОЖНІ 3 С</div></header>
+      <section class="stats" aria-label="Ключові показники">
+        <article class="stat-card"><div class="stat-head">ОБРОБЛЕНО ЗАПИСІВ <span>↗</span></div><div class="stat-value" id="total">0</div><div class="stat-foot">Синхронізовано з Cloud</div></article>
+        <article class="stat-card"><div class="stat-head">ПОПЕРЕДЖЕННЯ <span>⚠</span></div><div class="stat-value" id="alert-count">0</div><div class="stat-foot">За останні 500 вимірювань</div></article>
+        <article class="stat-card"><div class="stat-head">ЗАТРИМКА EDGE <span>◷</span></div><div class="stat-value"><span id="latency">0</span><em>мс</em></div><div class="stat-foot">Середній час локального рішення</div></article>
+        <article class="stat-card"><div class="stat-head">СТАН СИСТЕМИ <span>●</span></div><div class="stat-value state" id="state-text">Очікування</div><div class="stat-foot" id="last-update">Немає вимірювань</div></article>
+      </section>
+      <div class="section-title"><div><h2>Поточні показники</h2><p>Шість датчиків виробничої лінії</p></div><span class="right-note">Сенсори / Live</span></div>
+      <section class="sensors" id="sensor-cards">
+        <article class="sensor-card"><div>Вібрація</div><strong id="vibration">—</strong><small>мм/с</small><span>Вібраційний контроль</span></article>
+        <article class="sensor-card"><div>Підшипник</div><strong id="bearing_temp">—</strong><small>°C</small><span>Температура</span></article>
+        <article class="sensor-card"><div>Струм двигуна</div><strong id="motor_current">—</strong><small>А</small><span>Навантаження</span></article>
+        <article class="sensor-card"><div>Оберти</div><strong id="rpm">—</strong><small>RPM</small><span>Швидкість двигуна</span></article>
+        <article class="sensor-card"><div>Рівень шуму</div><strong id="noise_db">—</strong><small>дБ</small><span>Акустичний контроль</span></article>
+        <article class="sensor-card"><div>Тиск</div><strong id="pressure">—</strong><small>бар</small><span>Гідросистема</span></article>
+      </section>
+      <section id="charts" class="panel wide-chart"><div class="panel-header"><div><h2>Температура підшипника</h2><p>Історія останніх 120 вимірювань</p></div><span class="tag">TIME SERIES</span></div><div class="chart-wrap"><svg viewBox="0 0 900 220" preserveAspectRatio="none" id="chart" role="img" aria-label="Графік температури"><g id="grid-lines"></g><polyline id="chart-area" points=""/><polyline id="chart-line" points=""/></svg><div class="axis"><span>Раніше</span><span>Час →</span><span>Зараз</span></div></div></section>
+      <div class="bottom-grid"><section id="alerts" class="panel alerts-panel"><div class="panel-header"><div><h2>Журнал аномалій</h2><p>Реакції Edge в реальному часі</p></div><span class="tag">ALERTS</span></div><div id="alerts-list" class="alerts-list"><div class="empty">Очікування показників датчиків...</div></div></section>
+      <section id="controls" class="panel controls-panel"><div class="panel-header"><div><h2>Команди для Edge</h2><p>Двосторонній зв'язок Cloud → Edge</p></div><span class="tag">REMOTE</span></div><div class="control-grid"><button class="control-btn danger" data-command="stop_line">■ Зупинити лінію</button><button class="control-btn good" data-command="start_line">▶ Запустити лінію</button><button class="control-btn" data-command="cooling_on">❄ Увімкнути охолодження</button><button class="control-btn" data-command="cooling_off">◯ Вимкнути охолодження</button></div><p id="command-message" class="command-message">Команди передаються через MQTT.</p><h3>Останні виконані дії</h3><div id="actions-list" class="actions-list">Ще немає команд</div></section></div>
+      <footer class="page-footer">SMART FACTORY MONITORING <span>Docker · MQTT · Edge Processing · InfluxDB · REST API</span></footer>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

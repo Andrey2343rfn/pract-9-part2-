@@ -1,0 +1,108 @@
+name: practice92-smart-factory
+
+services:
+  mqtt-broker:
+    image: eclipse-mosquitto:2.0
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mqtt-data:/mosquitto/data
+      - mqtt-logs:/mosquitto/log
+    ports:
+      - "127.0.0.1:1883:1883"
+    restart: unless-stopped
+    networks:
+      - edge-net
+      - cloud-net
+
+  sensor-simulator:
+    build: ./sensors
+    depends_on:
+      - mqtt-broker
+    environment:
+      MQTT_HOST: mqtt-broker
+      MQTT_PORT: 1883
+      SENSOR_INTERVAL: ${SENSOR_INTERVAL:-2}
+      FAULT_RATE: ${FAULT_RATE:-0.10}
+      DEVICE_ID: factory-line-01
+    restart: unless-stopped
+    networks:
+      - edge-net
+
+  edge-processor:
+    build: ./edge
+    depends_on:
+      - mqtt-broker
+      - influxdb
+    environment:
+      MQTT_HOST: mqtt-broker
+      EDGE_DB: /app/data/edge.db
+      INFLUX_URL: http://influxdb:8086
+      INFLUX_TOKEN: ${INFLUX_TOKEN}
+      INFLUX_ORG: ${INFLUX_ORG}
+      INFLUX_BUCKET: ${INFLUX_BUCKET}
+    volumes:
+      - edge-data:/app/data
+    restart: unless-stopped
+    networks:
+      - edge-net
+
+  influxdb:
+    image: influxdb:2.7
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUX_USERNAME}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUX_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUX_ORG}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUX_BUCKET}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUX_TOKEN}
+    ports:
+      - "127.0.0.1:8086:8086"
+    volumes:
+      - influx-data:/var/lib/influxdb2
+      - influx-config:/etc/influxdb2
+    restart: unless-stopped
+    networks:
+      - edge-net
+      - cloud-net
+
+  cloud-connector:
+    build: ./cloud
+    depends_on:
+      - mqtt-broker
+      - influxdb
+    environment:
+      MQTT_HOST: mqtt-broker
+      CLOUD_DB: /app/data/cloud.db
+      INFLUX_URL: http://influxdb:8086
+      INFLUX_TOKEN: ${INFLUX_TOKEN}
+      INFLUX_ORG: ${INFLUX_ORG}
+      INFLUX_BUCKET: ${INFLUX_BUCKET}
+    volumes:
+      - cloud-data:/app/data
+    restart: unless-stopped
+    networks:
+      - cloud-net
+
+  dashboard:
+    build: ./dashboard
+    depends_on:
+      - cloud-connector
+    ports:
+      - "127.0.0.1:8080:80"
+    restart: unless-stopped
+    networks:
+      - cloud-net
+
+volumes:
+  mqtt-data:
+  mqtt-logs:
+  edge-data:
+  cloud-data:
+  influx-data:
+  influx-config:
+
+networks:
+  edge-net:
+    driver: bridge
+  cloud-net:
+    driver: bridge

@@ -1,0 +1,12 @@
+{
+  "verification_scope": "Pure functions only, no Docker/MQTT/Cloud runtime in this environment",
+  "synthetic_samples": 2016,
+  "synthetic_faults": 193,
+  "rule_true_positives": 193,
+  "rule_false_positives": 0,
+  "rule_false_negatives": 0,
+  "rule_precision": 1.0,
+  "rule_recall": 1.0,
+  "rule_latency_mean_ms": 0.0015948065481834438,
+  "rule_latency_p95_ms": 0.001661999988300522
+}

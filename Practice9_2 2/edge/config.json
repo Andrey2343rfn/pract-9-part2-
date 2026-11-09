@@ -1,0 +1,10 @@
+{
+  "thresholds": {
+    "bearing_temp": {"high": 82, "action": "cooling_on", "level": "critical"},
+    "vibration": {"high": 3.2, "action": "stop_line", "level": "critical"},
+    "motor_current": {"high": 19, "action": "reduce_load", "level": "warning"},
+    "rpm": {"low": 900, "action": "inspect_motor", "level": "warning"},
+    "noise_db": {"high": 87, "action": "inspect_noise", "level": "warning"},
+    "pressure": {"low": 2.4, "action": "inspect_pressure", "level": "critical"}
+  }
+}
